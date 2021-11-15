@@ -36,13 +36,25 @@ function App() {
     name:"",
     noOfTrack:""
   });
-  const [isFormInvalid, setIsFormInvalid] = React.useState(false);
+  const [isNameInvalid, setIsNameInvalid] = React.useState(false);
+  const [isTrackNoInvalid, setIsTrackNoInvalid] = React.useState(false);
   const [isResponse,setIsResponse] = React.useState(false);
   const [artistInfo,setArtistInfo] = React.useState({})
   
   const searchArtist = () => {
-    if(artistForm.name.toLowerCase()==='jack' && artistForm.noOfTrack==='4'){
-      setIsFormInvalid(false);
+    setIsTrackNoInvalid(false);
+    setIsNameInvalid(false);
+    if(artistForm.name.toLowerCase() !== 'jack'){
+      setIsNameInvalid(true);
+      return false;
+    } 
+    if(artistForm.noOfTrack !== '4'){
+      setIsTrackNoInvalid(true);
+      return false;
+    }
+    if(!isNameInvalid && !isTrackNoInvalid){
+      setIsNameInvalid(false);
+      setIsTrackNoInvalid(false)
       const req = `http://itunes.apple.com/search?term=${artistForm.name}&limit=${artistForm.noOfTrack}`
       fetch(req)
       .then(res => res.json())
@@ -54,8 +66,6 @@ function App() {
           handleClose()
         }
       )
-    }else{
-      setIsFormInvalid(true);
     }
   }
 
@@ -121,7 +131,7 @@ function App() {
             Name
           </Typography> */}
           <TextField
-          error={isFormInvalid}
+          error={isNameInvalid}
           style={{width:'100%'}}
           id="standard-error-helper-text"
           label="Name"
@@ -129,7 +139,7 @@ function App() {
           defaultValue={artistForm.name}
           onChange={(e)=>updateValues(e,'name')}
           // defaultValue=""
-          helperText={isFormInvalid && "Incorrect entry."}
+          helperText={isNameInvalid && "Incorrect entry."}
           variant="standard"
         />
         <br />
@@ -137,12 +147,12 @@ function App() {
             No of Tracks
           </Typography> */}
           <TextField
-          error={isFormInvalid}
+          error={isTrackNoInvalid}
           style={{width:'100%'}}
           id="standard-error-helper-text"
           label="No of Tracks"
           defaultValue={artistForm.noOfTrack}
-          helperText={isFormInvalid && "Incorrect entry."}
+          helperText={isTrackNoInvalid && "Incorrect entry."}
           variant="standard"
           onChange={(e)=>updateValues(e,'trackNo')}
         />
